@@ -41,6 +41,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      
+    });
     MyLocation().getPermissions().then((value) {
       if (value == true) {
         if(isInit)updateTime();
