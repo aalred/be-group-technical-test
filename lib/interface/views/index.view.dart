@@ -36,20 +36,25 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   String text = "Obteniendo ubicación...";
+  bool isInit = true;
+  DateTime date = DateTime.now();
   @override
   void initState() {
     super.initState();
     MyLocation().getPermissions().then((value) {
       if (value == true) {
-        updateTime();
+        if(isInit)updateTime();
         var receivePort = ReceivePort();
         Isolate.spawn((message) {
           Timer.periodic(Duration(seconds: 120), (timer) {
+            message.send("update");
           });
         }, receivePort.sendPort);
 
         receivePort.listen((message) {
-          print(DateTime.now());
+          isInit = false;
+          date = DateTime.now();
+          print(date);
           updateTime();
         });
       }
@@ -58,7 +63,7 @@ class _HomeViewState extends State<HomeView> {
 
   void updateTime() async {
     text = await MyLocation().getLocation();
-    text = "$text ${DateTime.now()}";
+    text = "$text $date";
     setState(() {});
   }
 
