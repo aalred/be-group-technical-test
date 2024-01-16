@@ -41,12 +41,10 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      
-    });
+    setState(() {});
     MyLocation().getPermissions().then((value) {
       if (value == true) {
-        if(isInit)updateTime();
+        if (isInit) updateTime();
         var receivePort = ReceivePort();
         Isolate.spawn((message) {
           Timer.periodic(Duration(seconds: 120), (timer) {
@@ -54,10 +52,9 @@ class _HomeViewState extends State<HomeView> {
           });
         }, receivePort.sendPort);
 
-        receivePort.listen((message) {
+        receivePort.listen((message) async {
           isInit = false;
           date = DateTime.now();
-          print(date);
           updateTime();
         });
       }
@@ -66,7 +63,8 @@ class _HomeViewState extends State<HomeView> {
 
   void updateTime() async {
     text = await MyLocation().getLocation();
-    text = "$text $date";
+    text = "$text \n $date";
+    print(text);
     setState(() {});
   }
 

@@ -21,13 +21,20 @@ class MyLocation {
 
   Future<String> getLocation() async {
     try {
-      
+      var result = await _location.isBackgroundModeEnabled();
+      if (!result) {
+        await _location.enableBackgroundMode(enable: true);
+        result = await _location.isBackgroundModeEnabled();
+        if (!result) {
+          await _location.requestService();
+        }
+      }
       locationData = await _location.getLocation();
       _latitude = locationData.latitude ?? _latitude;
       _longitude = locationData.longitude ?? _longitude;
       return "lat:${_latitude}, long:${_longitude}";
     } catch (e) {
-      return "Permisos no proporcionados";
+      return "Permisos no proporcionados para ejecutar en segundo plano, configura los permisos para que se puedan ejecutar en todo momento";
     }
   }
 }
