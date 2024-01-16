@@ -42,10 +42,16 @@ class _HomeViewState extends State<HomeView> {
     MyLocation().getPermissions().then((value) {
       if (value == true) {
         updateTime();
-        Timer.periodic(Duration(seconds: 120), (timer) async {
+        var receivePort = ReceivePort();
+        Isolate.spawn((message) {
+          Timer.periodic(Duration(seconds: 120), (timer) {
+          });
+        }, receivePort.sendPort);
+
+        receivePort.listen((message) {
+          print(DateTime.now());
           updateTime();
         });
-        print("object");
       }
     });
   }
